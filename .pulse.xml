@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<recipe name="go">
+		<executable exe="go" args="get code.google.com/p/go.tools/cmd/vet"/>
+		<executable exe="go" args="get -v ./..."/>
+		<executable exe="go" args="install -a -race std"/>
+		<executable exe="go" args="tool vet -all ."/>
+		<executable exe="go" args="build ./..."/>
+		<executable exe="go" args="test -race -v ./..."/>
+	</recipe>
+</project>
