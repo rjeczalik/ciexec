@@ -1,3 +1,4 @@
+// Package bash provides simple interface to a shell session.
 package bash
 
 import (
@@ -11,7 +12,8 @@ import (
 var trap = []byte("__EXIT=0; trap '__EXIT=$?' ERR\n")
 var exit = []byte("exit $__EXIT\n")
 
-// Session TODO
+// Session represents a single Bash session. Any environment change are preserved
+// across multiple commands.
 type Session struct {
 	w io.Writer
 	d <-chan struct{}
@@ -19,7 +21,7 @@ type Session struct {
 	c *exec.Cmd
 }
 
-// NewSession TODO
+// NewSession initiates new bash session. It sources user's default .bashrc file.
 func NewSession(w io.Writer) (*Session, error) {
 	c := exec.Command("bash")
 	c.Args = []string{"-i"}
@@ -40,13 +42,15 @@ func NewSession(w io.Writer) (*Session, error) {
 	return s, nil
 }
 
-// Start TODO
+// Start runs a single line in the bash session. The execution is asynchronous,
+// it does not wait for the command to finish.
 func (s *Session) Start(cmd string) {
 	s.f.Write([]byte(cmd))
 	s.f.Write([]byte{'\n'})
 }
 
-// Close TODO
+// Close terminates the session. It waits for the session to cleanup. The function
+// returns the last error encountered during the session, if any.
 func (s *Session) Close() error {
 	s.f.Write(exit)
 	err := s.c.Wait()

@@ -23,7 +23,7 @@ NEXT:
 	return true
 }
 
-func TestMergeEnv(t *testing.T) {
+func TestOverrideEnv(t *testing.T) {
 	t.Parallel()
 	cases := [...]struct {
 		env []string
@@ -55,7 +55,7 @@ func TestMergeEnv(t *testing.T) {
 		[]string{"B=b", "C=c", "E=e", "F=f"},
 	}}
 	for i, cas := range cases {
-		if mrg := MergeEnv(cas.env, cas.ovr); !envequal(mrg, cas.mrg) {
+		if mrg := OverrideEnv(cas.env, cas.ovr); !envequal(mrg, cas.mrg) {
 			t.Errorf("want mrg=%v; got %v (i=%d)", cas.mrg, mrg, i)
 		}
 	}
