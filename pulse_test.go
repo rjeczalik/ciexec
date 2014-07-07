@@ -1,13 +1,12 @@
 package ciexec
 
 import (
-	"bytes"
 	"encoding/xml"
 	"reflect"
 	"testing"
 )
 
-func cmdequal(lhs, rhs Commands) bool {
+func cmdequal(lhs, rhs pulseCommands) bool {
 	if len(lhs) != len(rhs) {
 		return false
 	}
@@ -33,10 +32,10 @@ func cmdequal(lhs, rhs Commands) bool {
 	return true
 }
 
-var fixture = [...]struct {
+var pulseFixture = [...]struct {
 	cfg []byte
-	pro *Project
-	cmd Commands
+	pro *pulseProject
+	cmd pulseCommands
 }{
 	0: {
 		[]byte(`<?xml version="1.0" encoding="UTF-8"?>
@@ -49,7 +48,7 @@ var fixture = [...]struct {
 		</executable>
 	</recipe>
 </project>`),
-		&Project{
+		&pulseProject{
 			XMLName: xml.Name{Local: "project"},
 			Recipe: []Recipe{{
 				Name: "test",
@@ -63,7 +62,7 @@ var fixture = [...]struct {
 				}},
 			}},
 		},
-		Commands{
+		pulseCommands{
 			"test": {
 				{Path: "jkll", Args: []string{"jkll", "-arg1", "-arg2", "-arg3"}},
 				{Path: "meho", Args: []string{"meho", "-merg1", "-merg2", "-merg3", "long merg 4", "long merg 5"}},
@@ -97,7 +96,7 @@ var fixture = [...]struct {
 		</executable>
 	</recipe>
 </project>`),
-		&Project{
+		&pulseProject{
 			XMLName: xml.Name{Local: "project"},
 			Recipe: []Recipe{{
 				Name: "test1",
@@ -126,7 +125,7 @@ var fixture = [...]struct {
 				}},
 			}},
 		},
-		Commands{
+		pulseCommands{
 			"test1": {
 				{Path: "/usr/bin/zywww", Args: []string{"/usr/bin/zywww", "-arg1", "-arg2"}},
 				{Path: "/sbin/meho", Args: []string{"/sbin/meho", "-merg1", "-merg2", "- m e r g 3", "- m e r g 4"}},
@@ -143,8 +142,8 @@ var fixture = [...]struct {
 
 func TestPulseIs(t *testing.T) {
 	t.Parallel()
-	for i, cas := range fixture {
-		if !(pulse{}).Is(cas.cfg) {
+	for i, cas := range pulseFixture {
+		if !(pulse{}).Is("", cas.cfg) {
 			t.Errorf("(pulse{}).Is failed (i=%d)", i)
 		}
 	}
@@ -152,8 +151,8 @@ func TestPulseIs(t *testing.T) {
 
 func TestPulseParse(t *testing.T) {
 	t.Parallel()
-	for i, cas := range fixture {
-		pro, err := pulseParse(bytes.NewReader(cas.cfg))
+	for i, cas := range pulseFixture {
+		pro, err := pulseParse(cas.cfg)
 		if err != nil {
 			t.Errorf("want err=nil; got %q (i=%d)", err, i)
 			continue
@@ -166,7 +165,7 @@ func TestPulseParse(t *testing.T) {
 
 func TestPulseCmd(t *testing.T) {
 	t.Parallel()
-	for i, cas := range fixture {
+	for i, cas := range pulseFixture {
 		cmd := pulseCmd(cas.pro)
 		if !cmdequal(cmd, cas.cmd) {
 			t.Errorf("want cmd=%+v; got %+v (i=%d)", cas.cmd, cmd, i)

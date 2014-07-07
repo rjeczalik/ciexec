@@ -15,54 +15,47 @@ func init() {
 
 type pulse struct{}
 
-func (pulse) Is(content []byte) bool {
+func (pulse) Is(_ string, content []byte) bool {
 	return strings.Contains(http.DetectContentType(content), "text/xml")
 }
 
-func (pulse) Exec(recipe string, r io.Reader, w io.Writer) error {
-	pro, err := pulseParse(r)
+func (pulse) Exec(recipe string, p []byte, w io.Writer) error {
+	pro, err := pulseParse(p)
 	if err != nil {
 		return err
 	}
 	rec := pulseCmd(pro)
 	if rec == nil {
-		return errors.New("no recipes found")
+		return errors.New("pulse: no recipes found")
 	}
 	cmd, ok := rec[recipe]
 	if !ok {
-		return errors.New("no recipe found or it has no commands: " + recipe)
+		return errors.New("pulse: no recipe found or it has no commands: " + recipe)
 	}
 	return ExecCmd(cmd, w)
 }
 
-// Commands TODO
-type Commands map[string][]*exec.Cmd
+type pulseCommands map[string][]*exec.Cmd
 
-// Executable TODO
-type Executable struct {
-	Args    string   `xml:"args,attr"`
-	Exe     string   `xml:"exe,attr"`
-	ArgList []string `xml:"arg"`
-}
+type (
+	pulseProject struct {
+		XMLName xml.Name `xml:"project"`
+		Recipe  []Recipe `xml:"recipe"`
+	}
+	Recipe struct {
+		Name       string       `xml:"name,attr"`
+		Executable []Executable `xml:"executable"`
+	}
+	Executable struct {
+		Args    string   `xml:"args,attr"`
+		Exe     string   `xml:"exe,attr"`
+		ArgList []string `xml:"arg"`
+	}
+)
 
-// Recipw TODO
-type Recipe struct {
-	Name       string       `xml:"name,attr"`
-	Executable []Executable `xml:"executable"`
-}
-
-// Project TODO
-type Project struct {
-	XMLName xml.Name `xml:"project"`
-	Recipe  []Recipe `xml:"recipe"`
-}
-
-func pulseParse(r io.Reader) (*Project, error) {
-	var (
-		dec = xml.NewDecoder(r)
-		pro = &Project{}
-	)
-	if err := dec.Decode(pro); err != nil {
+func pulseParse(p []byte) (*pulseProject, error) {
+	var pro = &pulseProject{}
+	if err := xml.Unmarshal(p, pro); err != nil {
 		return nil, err
 	}
 	// Filter out empty empty ArgList.
@@ -88,8 +81,8 @@ func pulseParse(r io.Reader) (*Project, error) {
 	return pro, nil
 }
 
-func pulseCmd(pro *Project) Commands {
-	var m = make(Commands)
+func pulseCmd(pro *pulseProject) pulseCommands {
+	var m = make(pulseCommands)
 	for i := range pro.Recipe {
 		var c = make([]*exec.Cmd, 0, len(pro.Recipe[i].Executable))
 		for j := range pro.Recipe[i].Executable {
