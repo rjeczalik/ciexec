@@ -1,7 +1,6 @@
 package ciexec
 
 import (
-	"bytes"
 	"encoding/xml"
 	"reflect"
 	"testing"
@@ -144,7 +143,7 @@ var fixture = [...]struct {
 func TestPulseIs(t *testing.T) {
 	t.Parallel()
 	for i, cas := range fixture {
-		if !(pulse{}).Is(cas.cfg) {
+		if !(pulse{}).Is("", cas.cfg) {
 			t.Errorf("(pulse{}).Is failed (i=%d)", i)
 		}
 	}
@@ -153,7 +152,7 @@ func TestPulseIs(t *testing.T) {
 func TestPulseParse(t *testing.T) {
 	t.Parallel()
 	for i, cas := range fixture {
-		pro, err := pulseParse(bytes.NewReader(cas.cfg))
+		pro, err := pulseParse(cas.cfg)
 		if err != nil {
 			t.Errorf("want err=nil; got %q (i=%d)", err, i)
 			continue

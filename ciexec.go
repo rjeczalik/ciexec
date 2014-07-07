@@ -1,7 +1,6 @@
 package ciexec
 
 import (
-	"bytes"
 	"io"
 	"io/ioutil"
 	"os"
@@ -13,8 +12,8 @@ import (
 
 var (
 	all []interface {
-		Is([]byte) bool
-		Exec(string, io.Reader, io.Writer) error
+		Is(string, []byte) bool
+		Exec(string, []byte, io.Writer) error
 	}
 	defaultEnv []string = os.Environ()
 )
@@ -79,8 +78,8 @@ func Exec(file, detail string, w io.Writer) error {
 		return err
 	}
 	for _, ci := range all {
-		if ci.Is(b) {
-			return ci.Exec(detail, bytes.NewBuffer(b), w)
+		if ci.Is(file, b) {
+			return ci.Exec(detail, b, w)
 		}
 	}
 	return nil

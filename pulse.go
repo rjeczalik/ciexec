@@ -15,12 +15,12 @@ func init() {
 
 type pulse struct{}
 
-func (pulse) Is(content []byte) bool {
+func (pulse) Is(_ string, content []byte) bool {
 	return strings.Contains(http.DetectContentType(content), "text/xml")
 }
 
-func (pulse) Exec(recipe string, r io.Reader, w io.Writer) error {
-	pro, err := pulseParse(r)
+func (pulse) Exec(recipe string, p []byte, w io.Writer) error {
+	pro, err := pulseParse(p)
 	if err != nil {
 		return err
 	}
@@ -57,12 +57,9 @@ type Project struct {
 	Recipe  []Recipe `xml:"recipe"`
 }
 
-func pulseParse(r io.Reader) (*Project, error) {
-	var (
-		dec = xml.NewDecoder(r)
-		pro = &Project{}
-	)
-	if err := dec.Decode(pro); err != nil {
+func pulseParse(p []byte) (*Project, error) {
+	var pro = &Project{}
+	if err := xml.Unmarshal(p, pro); err != nil {
 		return nil, err
 	}
 	// Filter out empty empty ArgList.
