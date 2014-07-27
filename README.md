@@ -1,4 +1,4 @@
-## ciexec [![GoDoc](https://godoc.org/github.com/rjeczalik/ciexec?status.png)](https://godoc.org/github.com/rjeczalik/ciexec) [![Build Status](https://travis-ci.org/rjeczalik/ciexec.png?branch=master)](https://travis-ci.org/rjeczalik/ciexec)
+## ciexec [![GoDoc](https://godoc.org/github.com/rjeczalik/ciexec?status.png)](https://godoc.org/github.com/rjeczalik/ciexec) [![Build Status](https://travis-ci.org/rjeczalik/ciexec.png?branch=master)](https://travis-ci.org/rjeczalik/ciexec)[![Build status](https://ci.appveyor.com/api/projects/status/n336gfq692f2asth)](https://ci.appveyor.com/project/rjeczalik/ciexec)
 
 A command line tool for executing any CI configuration file (`.travis.yml`, `.pulse.xml`) like it was a shell script.
 
@@ -18,7 +18,6 @@ A command line tool for executing any CI configuration file (`.travis.yml`, `.pu
 
 ```
 ~ $ go get -u github.com/rjeczalik/ciexec/cmd/ciexec
-~ $ go install github.com/rjeczalik/ciexec/cmd/ciexec
 ```
 
 *Documentation*
