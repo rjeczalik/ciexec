@@ -1,4 +1,4 @@
-## ciexec [![GoDoc](https://godoc.org/github.com/rjeczalik/ciexec?status.png)](https://godoc.org/github.com/rjeczalik/ciexec) [![Build Status](https://travis-ci.org/rjeczalik/ciexec.png?branch=master)](https://travis-ci.org/rjeczalik/ciexec)[![Build status](https://ci.appveyor.com/api/projects/status/n336gfq692f2asth)](https://ci.appveyor.com/project/rjeczalik/ciexec)
+## ciexec [![GoDoc](https://godoc.org/github.com/rjeczalik/ciexec?status.png)](https://godoc.org/github.com/rjeczalik/ciexec) [![Build Status](https://travis-ci.org/rjeczalik/ciexec.png?branch=master)](https://travis-ci.org/rjeczalik/ciexec "linux_amd64") [![Build Status](https://travis-ci.org/rjeczalik/ciexec.png?branch=osx)](https://travis-ci.org/rjeczalik/ciexec "darwin_amd64") [![Build status](https://ci.appveyor.com/api/projects/status/n336gfq692f2asth)](https://ci.appveyor.com/project/rjeczalik/ciexec "windows_amd64")
 
 A command line tool for executing any CI configuration file (`.travis.yml`, `.pulse.xml`) like it was a shell script.
 
