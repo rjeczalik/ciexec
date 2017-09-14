@@ -12,7 +12,6 @@ env:
     - PATH=$HOME/gopath/bin:$PATH
 
 install:
- - go get code.google.com/p/go.tools/cmd/vet
  - go get -t -v ./...
  - go  install -a -race std
 
