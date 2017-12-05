@@ -11,7 +11,6 @@ install:
  - set PATH=%GOPATH%\bin;%PATH%
  - cd %APPVEYOR_BUILD_FOLDER%
  - go version
- - go get code.google.com/p/go.tools/cmd/vet
  - go get -v -t ./...
  - go  install -a -race std
 
